@@ -24,11 +24,18 @@ public:
 	static double getGyrBiasRW2(void) { return _gyrBiasRw2; }
 	static double getAccBiasRW2(void) { return _accBiasRw2; }
 
+	//custom set function
+	static void setGyrBiasRW2_Cov(const double& grw);
+	static void setAccBiasRW2_Cov(const double& arw);
+	static void setGyrMeasCov(const double& gnoise);
+	static void setAccMeasCov(const double& anoise);
 
 	IMUData(const double& gx, const double& gy, const double& gz,
 		const double& ax, const double& ay, const double& az,
 		const double& t);
 	//IMUData(const IMUData& imu);
+
+	IMUData(const Eigen::Matrix<double, 6, 1>& g_a,const double&& t);
 
 	// Raw data of imu's
 	Eigen::Vector3d _g;    //gyr data

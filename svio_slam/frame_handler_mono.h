@@ -22,6 +22,7 @@
 #include "frame_handler_base.h"
 #include "reprojector.h"
 #include "initialization.h"
+#include "imudata.h"
 
 namespace svo {
 
@@ -36,6 +37,10 @@ public:
 
   /// Provide an image.
   void addImage(const cv::Mat& img, double timestamp);
+
+  //provide imu 
+  //not finished
+  void addImu(const IMUData& imu);
 
   /// Set the first frame (used for synthetic datasets in benchmark node)
   void setFirstFrame(const FramePtr& first_frame);

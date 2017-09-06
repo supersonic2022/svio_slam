@@ -34,3 +34,30 @@ IMUData::IMUData(const double& gx, const double& gy, const double& gz,
 	_g(gx, gy, gz), _a(ax, ay, az), _t(t)
 {
 }
+
+IMUData::IMUData(const Eigen::Matrix<double, 6, 1>& g_a, const double&& t) :
+	_g(g_a.segment<3>(0)), _a(g_a.segment<3>(3)), _t(t)
+{
+}
+
+void IMUData::setGyrBiasRW2_Cov(const double& grw)
+{
+	IMUData::_gyrBiasRw2 = grw * grw;
+	IMUData::_gyrBiasRWCov = Eigen::Matrix3d::Identity()*_gyrBiasRw2;
+}
+
+void IMUData::setAccBiasRW2_Cov(const double& arw)
+{
+	IMUData::_accBiasRw2 = arw * arw;
+	IMUData::_accBiasRWCov = Eigen::Matrix3d::Identity()*_accBiasRw2;
+}
+
+void IMUData::setGyrMeasCov(const double& gnoise)
+{
+	IMUData::_gyrMeasCov = Eigen::Matrix3d::Identity()* gnoise * gnoise;
+}
+
+void IMUData::setAccMeasCov(const double& anoise)
+{
+	IMUData::_accMeasCov = Eigen::Matrix3d::Identity() * anoise * anoise;
+}

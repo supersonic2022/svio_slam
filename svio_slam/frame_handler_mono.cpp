@@ -90,6 +90,8 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
   finishFrameProcessingCommon(last_frame_->id_, res, last_frame_->nObs());
 }
 
+void FrameHandlerMono::addImu(const IMUData& imu) {}
+
 FrameHandlerMono::UpdateResult FrameHandlerMono::processFirstFrame()
 {
   new_frame_->T_f_w_ = SE3d(Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero());

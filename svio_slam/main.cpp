@@ -50,6 +50,10 @@ BenchmarkNode::BenchmarkNode()
 	viewer = new Viewer(cam_, vo_);
 	vo_->start();
 	view = std::thread(&Viewer::run, viewer);
+	IMUData::setGyrBiasRW2_Cov(dataset->imu_params[0].gyroscope_random_walk);
+	IMUData::setGyrMeasCov(dataset->imu_params[0].gyroscope_noise_density);
+	IMUData::setAccBiasRW2_Cov(dataset->imu_params[0].accelerometer_random_walk);
+	IMUData::setAccMeasCov(dataset->imu_params[0].accelerometer_noise_density);
 }
 
 BenchmarkNode::~BenchmarkNode()
@@ -69,10 +73,60 @@ void BenchmarkNode::runFromFolder()
 		ss << dataset->cam_data_files[0] << dataset->img_timestamps[0][img_id] << ".png";
 		cv::Mat img(cv::imread(ss.str().c_str(), 0));
 		assert(!img.empty());
-
+		
 		//cv::imshow("img", img);
 		// process frame
 		vo_->addImage(img, stod(dataset->img_timestamps[0][img_id]));
+
+		while (1)
+		{
+			static int cur_imu_id = 1;
+			if (img_id == 0) break;
+			static double last_img_timestampe = stod(dataset->img_timestamps[0][img_id]);
+			if (img_id == (dataset->img_timestamps[0].size() - 1))
+			{
+				break;
+			}
+			double next_img_timestamp = stod(dataset->img_timestamps[0][img_id + 1]);
+			
+			static double last_imu_timestamp = stod(dataset->imu_timestamps[0][cur_imu_id-1].first);
+			static double cur_imu_timestamp = stod(dataset->imu_timestamps[0][cur_imu_id].first);
+			if (cur_imu_id == (dataset->imu_timestamps[0].size() - 1))
+			{
+				break;
+			}
+			double next_imu_timestamp = stod(dataset->imu_timestamps[0][cur_imu_id + 1].first);
+			//check head(only in the initial situation)
+			if (cur_imu_timestamp < last_img_timestampe)
+			{
+				cur_imu_id++; 
+				last_img_timestampe = cur_imu_timestamp;
+				cur_imu_timestamp = next_imu_timestamp;
+				continue;
+			}
+
+			if (last_imu_timestamp <= last_img_timestampe && cur_imu_timestamp >= last_img_timestampe)
+			{
+				IMUData imudata(dataset->imu_timestamps[0][cur_imu_id-1].second, cur_imu_timestamp - last_img_timestampe);
+				vo_->addImu(imudata);
+			}
+
+			//check tail
+			if (next_imu_timestamp >= next_img_timestamp)
+			{
+				IMUData imudata(dataset->imu_timestamps[0][cur_imu_id].second, next_img_timestamp - cur_imu_timestamp);
+				vo_->addImu(imudata);
+				last_img_timestampe = cur_imu_timestamp;
+				cur_imu_timestamp = next_imu_timestamp;
+				last_img_timestampe = next_img_timestamp;
+				break;
+			}
+
+			IMUData imudata(dataset->imu_timestamps[0][cur_imu_id].second, next_imu_timestamp - cur_imu_timestamp);
+			vo_->addImu(imudata);
+			last_img_timestampe = cur_imu_timestamp;
+			cur_imu_timestamp = next_imu_timestamp;		
+		}
 
 		// display tracking quality
 		if (vo_->lastFrame() != NULL)
