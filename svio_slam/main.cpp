@@ -19,7 +19,8 @@
 #include "EuRoCReader.h"
 
 class BenchmarkNode
-{
+{	
+	EuRoCData* dataset; 
 	vk::AbstractCamera* cam_;
 	svo::FrameHandlerMono* vo_;
 	Viewer* viewer;
@@ -33,11 +34,22 @@ public:
 
 BenchmarkNode::BenchmarkNode()
 {
-	cam_ = new vk::PinholeCamera(752, 480, 315.5, 315.5, 376.0, 240.0);
+	dataset = new EuRoCData("W:/vio/datasets/MH_01_easy/mav0");
+	cam_ = new vk::PinholeCamera(
+		dataset->cam_params[0].resolution[0], 
+		dataset->cam_params[0].resolution[1], 
+		dataset->cam_params[0].intrinsics[0], 
+		dataset->cam_params[0].intrinsics[1], 
+		dataset->cam_params[0].intrinsics[2], 
+		dataset->cam_params[0].intrinsics[3],
+		dataset->cam_params[0].distortion_coefficients[0],
+		dataset->cam_params[0].distortion_coefficients[1], 
+		dataset->cam_params[0].distortion_coefficients[2], 
+		dataset->cam_params[0].distortion_coefficients[3]);
 	vo_ = new svo::FrameHandlerMono(cam_);
 	viewer = new Viewer(cam_, vo_);
 	vo_->start();
-	//view = std::thread(&Viewer::run, viewer);
+	view = std::thread(&Viewer::run, viewer);
 }
 
 BenchmarkNode::~BenchmarkNode()
@@ -50,19 +62,17 @@ BenchmarkNode::~BenchmarkNode()
 
 void BenchmarkNode::runFromFolder()
 {
-	for (int img_id = 2; img_id < 188; ++img_id)
+	for (int img_id = 0; img_id < dataset->img_timestamps[0].size(); ++img_id)
 	{
 		// load image
 		std::stringstream ss;
-		ss << "W:/codecraft/svio_slam/svio_slam/dataset/sin2_tex2_h1_v8_d/img/frame_"
-			<< std::setw(6) << std::setfill('0') << img_id << "_0.png";
-		if (img_id == 2)
-			std::cout << "reading image " << ss.str() << std::endl;
+		ss << dataset->cam_data_files[0] << dataset->img_timestamps[0][img_id] << ".png";
 		cv::Mat img(cv::imread(ss.str().c_str(), 0));
 		assert(!img.empty());
 
+		//cv::imshow("img", img);
 		// process frame
-		vo_->addImage(img, 0.01*img_id);
+		vo_->addImage(img, stod(dataset->img_timestamps[0][img_id]));
 
 		// display tracking quality
 		if (vo_->lastFrame() != NULL)
@@ -77,19 +87,10 @@ void BenchmarkNode::runFromFolder()
 }
 
 
-int main_test(int argc, char** argv)
-{
-	{
-		BenchmarkNode benchmark;
-		benchmark.runFromFolder();
-	}
-	printf("BenchmarkNode finished.\n");
-	return 0;
-}
-
 int main()
 {
-	EuRoCData dataset("W:/vio/datasets/MH_01_easy/mav0");
+	BenchmarkNode benchmark;
+	benchmark.runFromFolder();
 	return 0;
 }
 

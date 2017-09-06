@@ -41,6 +41,8 @@ void Viewer::run()
 		drawKFs();
 
 		pangolin::FinishFrame();
+
+		cv::waitKey(mT);
 	}
 		
 }
@@ -51,9 +53,12 @@ void Viewer::drawKFs()
 	const float h = w * 0.75;
 	const float z = w * 0.6;
 
-	auto kfs = (vo->map()).keyframes_;
+	auto& kfs = (vo->map()).keyframes_;
 	if (!kfs.size())
 		return;
+
+	//std::cout << "kf size = " << kfs.size() << std::endl;
+
 	for (auto kf_it : kfs)
 	{
 		svo::FramePtr kf = kf_it;
