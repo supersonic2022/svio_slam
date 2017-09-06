@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="bundle_adjustment.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="depth_filter.cpp" />
+    <ClCompile Include="EuRoCReader.cpp" />
+    <ClCompile Include="fast\faster_corner_10_sse.cpp" />
+    <ClCompile Include="fast\fast_10.cpp" />
+    <ClCompile Include="fast\fast_10_score.cpp" />
+    <ClCompile Include="fast\nonmax_3x3.cpp" />
+    <ClCompile Include="feature_alignment.cpp" />
+    <ClCompile Include="feature_detection.cpp" />
+    <ClCompile Include="frame.cpp" />
+    <ClCompile Include="frame_handler_base.cpp" />
+    <ClCompile Include="frame_handler_mono.cpp" />
+    <ClCompile Include="imudata.cpp" />
+    <ClCompile Include="initialization.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="map.cpp" />
+    <ClCompile Include="matcher.cpp" />
+    <ClCompile Include="navstate.cpp" />
+    <ClCompile Include="point.cpp" />
+    <ClCompile Include="pose_optimizer.cpp" />
+    <ClCompile Include="preintegration.cpp" />
+    <ClCompile Include="reprojector.cpp" />
+    <ClCompile Include="sparse_img_align.cpp" />
+    <ClCompile Include="sys\time.cpp" />
+    <ClCompile Include="viewer.cpp" />
+    <ClCompile Include="vikit\atan_camera.cpp" />
+    <ClCompile Include="vikit\homography.cpp" />
+    <ClCompile Include="vikit\img_align.cpp" />
+    <ClCompile Include="vikit\math_utils.cpp" />
+    <ClCompile Include="vikit\omni_camera.cpp" />
+    <ClCompile Include="vikit\performance_monitor.cpp" />
+    <ClCompile Include="vikit\pinhole_camera.cpp" />
+    <ClCompile Include="vikit\robust_cost.cpp" />
+    <ClCompile Include="vikit\user_input_thread.cpp" />
+    <ClCompile Include="vikit\vision.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bundle_adjustment.h" />
+    <ClInclude Include="config.h" />
+    <ClInclude Include="depth_filter.h" />
+    <ClInclude Include="EuRoCReader.h" />
+    <ClInclude Include="fast\corner_10.h" />
+    <ClInclude Include="fast\corner_9.h" />
+    <ClInclude Include="fast\fast.h" />
+    <ClInclude Include="fast\faster_corner_utilities.h" />
+    <ClInclude Include="feature.h" />
+    <ClInclude Include="feature_alignment.h" />
+    <ClInclude Include="feature_detection.h" />
+    <ClInclude Include="frame.h" />
+    <ClInclude Include="frame_handler_base.h" />
+    <ClInclude Include="frame_handler_mono.h" />
+    <ClInclude Include="global.h" />
+    <ClInclude Include="imudata.h" />
+    <ClInclude Include="initialization.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="matcher.h" />
+    <ClInclude Include="navstate.h" />
+    <ClInclude Include="noncopyable.h" />
+    <ClInclude Include="point.h" />
+    <ClInclude Include="pose_optimizer.h" />
+    <ClInclude Include="preintegration.h" />
+    <ClInclude Include="reprojector.h" />
+    <ClInclude Include="sparse_img_align.h" />
+    <ClInclude Include="sys\time.h" />
+    <ClInclude Include="sys\times.h" />
+    <ClInclude Include="viewer.h" />
+    <ClInclude Include="vikit\abstract_camera.h" />
+    <ClInclude Include="vikit\aligned_mem.h" />
+    <ClInclude Include="vikit\atan_camera.h" />
+    <ClInclude Include="vikit\blender_utils.h" />
+    <ClInclude Include="vikit\file_reader.h" />
+    <ClInclude Include="vikit\file_reader_types.h" />
+    <ClInclude Include="vikit\homography.h" />
+    <ClInclude Include="vikit\img_align.h" />
+    <ClInclude Include="vikit\math_utils.h" />
+    <ClInclude Include="vikit\nlls_solver.h" />
+    <ClInclude Include="vikit\nlls_solver_impl.hpp" />
+    <ClInclude Include="vikit\omni_camera.h" />
+    <ClInclude Include="vikit\patch_score.h" />
+    <ClInclude Include="vikit\performance_monitor.h" />
+    <ClInclude Include="vikit\pinhole_camera.h" />
+    <ClInclude Include="vikit\ringbuffer.h" />
+    <ClInclude Include="vikit\robust_cost.h" />
+    <ClInclude Include="vikit\sample.h" />
+    <ClInclude Include="vikit\timer.h" />
+    <ClInclude Include="vikit\user_input_thread.h" />
+    <ClInclude Include="vikit\vision.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C618401A-0D1A-4BC8-B32D-FAF20651DAD0}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>svio_slam</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalOptions>/D _CRT_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\GaryL\Desktop\svo\Pangolin-master\build\external\glew\include;C:\Program Files\Pangolin\include;C:\Users\GaryL\Desktop\svo\suitesparse-metis-for-windows-1.3.1\build\install\include\suitesparse;C:\Program Files\g2o\include;C:\Program Files\Sophus\include;D:\Software\Opencv2413\opencv\build\include;D:\eigen3.3.4\eigen-eigen-5a0156e40feb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/D _CRT_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\GaryL\Desktop\svo\Pangolin-master\build\external\zlib\lib;C:\Users\GaryL\Desktop\svo\Pangolin-master\build\external\libjpeg\lib;C:\Users\GaryL\Desktop\svo\Pangolin-master\build\external\libpng\lib;C:\Users\GaryL\Desktop\svo\Pangolin-master\build\external\glew\lib;C:\Program Files\Pangolin\lib;C:\Users\GaryL\Desktop\svo\suitesparse-metis-for-windows-1.3.1\build\install\lib64\lapack_blas_windows;C:\Users\GaryL\Desktop\svo\suitesparse-metis-for-windows-1.3.1\build\install\lib64;C:\Program Files\g2o\lib;D:\Software\Opencv2413\v14\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>liblapack.lib;libblas.lib;libamdd.lib;libbtfd.lib;libcamdd.lib;libccolamdd.lib;libcholmodd.lib;libcolamdd.lib;libcxsparsed.lib;libklud.lib;libldld.lib;libspqrd.lib;libumfpackd.lib;suitesparseconfigd.lib;metisd.lib;g2o_interface_d.lib;g2o_parser_d.lib;g2o_simulator_d.lib;g2o_types_sim3_d.lib;g2o_types_icp_d.lib;g2o_types_slam3d_addons_d.lib;g2o_types_sba_d.lib;g2o_types_slam2d_addons_d.lib;g2o_types_slam3d_d.lib;g2o_solver_slam2d_linear_d.lib;g2o_types_data_d.lib;g2o_types_sclam2d_d.lib;g2o_solver_structure_only_d.lib;g2o_types_slam2d_d.lib;g2o_solver_pcg_d.lib;g2o_solver_dense_d.lib;g2o_solver_eigen_d.lib;g2o_solver_cholmod_d.lib;g2o_solver_csparse_d.lib;g2o_cli_d.lib;g2o_core_d.lib;g2o_stuff_d.lib;g2o_csparse_extension_d.lib;g2o_ext_freeglut_minimal_d.lib;g2o_opengl_helper_d.lib;g2o_ext_csparse_d.lib;opencv_calib3d2413d.lib;opencv_contrib2413d.lib;opencv_core2413d.lib;opencv_features2d2413d.lib;opencv_flann2413d.lib;opencv_gpu2413d.lib;opencv_highgui2413d.lib;opencv_imgproc2413d.lib;opencv_legacy2413d.lib;opencv_ml2413d.lib;opencv_nonfree2413d.lib;opencv_objdetect2413d.lib;opencv_ocl2413d.lib;opencv_photo2413d.lib;opencv_stitching2413d.lib;opencv_superres2413d.lib;opencv_ts2413d.lib;opencv_video2413d.lib;opencv_videostab2413d.lib;pangolin.lib;glewd.lib;opengl32.lib;libpng16_staticd.lib;jpeg.lib;zlibstaticd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

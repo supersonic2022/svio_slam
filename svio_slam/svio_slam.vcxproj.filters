@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\svo">
+      <UniqueIdentifier>{212edd08-8967-4a2a-baaa-6696b9d33b9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\svo">
+      <UniqueIdentifier>{e02106d2-d834-4587-9cfe-e14f62c8e3c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\vikit">
+      <UniqueIdentifier>{b06c1a37-a5e4-45c3-b1e0-e9810fb5d6db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\vikit">
+      <UniqueIdentifier>{a4e58dec-1abc-4fc0-9987-db5d2a84d43e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\fast">
+      <UniqueIdentifier>{c9e2e426-ca54-4aae-88fc-a72334b67be0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\fast">
+      <UniqueIdentifier>{520421bc-d543-4825-a551-18847ef9cbff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="bundle_adjustment.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="depth_filter.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="feature_alignment.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="feature_detection.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="frame.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="frame_handler_base.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="frame_handler_mono.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="initialization.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="map.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="matcher.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="point.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="pose_optimizer.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="reprojector.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="sparse_img_align.cpp">
+      <Filter>Source Files\svo</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\atan_camera.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\homography.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\img_align.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\math_utils.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\omni_camera.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\performance_monitor.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\pinhole_camera.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\robust_cost.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\user_input_thread.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="vikit\vision.cpp">
+      <Filter>Source Files\vikit</Filter>
+    </ClCompile>
+    <ClCompile Include="fast\fast_10.cpp">
+      <Filter>Source Files\fast</Filter>
+    </ClCompile>
+    <ClCompile Include="fast\fast_10_score.cpp">
+      <Filter>Source Files\fast</Filter>
+    </ClCompile>
+    <ClCompile Include="fast\faster_corner_10_sse.cpp">
+      <Filter>Source Files\fast</Filter>
+    </ClCompile>
+    <ClCompile Include="fast\nonmax_3x3.cpp">
+      <Filter>Source Files\fast</Filter>
+    </ClCompile>
+    <ClCompile Include="sys\time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="viewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="preintegration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="navstate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imudata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EuRoCReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bundle_adjustment.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="depth_filter.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="feature.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="feature_alignment.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="feature_detection.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="frame.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="frame_handler_base.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="frame_handler_mono.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="global.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="initialization.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="map.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="matcher.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="point.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="pose_optimizer.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="reprojector.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="sparse_img_align.h">
+      <Filter>Header Files\svo</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\abstract_camera.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\aligned_mem.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\atan_camera.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\blender_utils.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\file_reader.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\file_reader_types.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\homography.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\img_align.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\math_utils.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\nlls_solver.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\nlls_solver_impl.hpp">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\omni_camera.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\patch_score.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\performance_monitor.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\pinhole_camera.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\ringbuffer.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\robust_cost.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\sample.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\timer.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\user_input_thread.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="vikit\vision.h">
+      <Filter>Header Files\vikit</Filter>
+    </ClInclude>
+    <ClInclude Include="noncopyable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fast\corner_9.h">
+      <Filter>Header Files\fast</Filter>
+    </ClInclude>
+    <ClInclude Include="fast\corner_10.h">
+      <Filter>Header Files\fast</Filter>
+    </ClInclude>
+    <ClInclude Include="fast\fast.h">
+      <Filter>Header Files\fast</Filter>
+    </ClInclude>
+    <ClInclude Include="fast\faster_corner_utilities.h">
+      <Filter>Header Files\fast</Filter>
+    </ClInclude>
+    <ClInclude Include="sys\time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sys\times.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="viewer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="preintegration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="navstate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imudata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EuRoCReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
