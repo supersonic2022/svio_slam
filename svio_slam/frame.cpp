@@ -60,6 +60,42 @@ void Frame::initFrame(const cv::Mat& img)
   frame_utils::createImgPyramid(img, std::max(Config::nPyrLevels(), Config::kltMaxLevel()+1), img_pyr_);
 }
 
+void Frame::SetInitialNavStateAndBias(const NavState& ns)
+{
+	imuState = ns;
+
+	imuState.Set_BiasGyr(ns.Get_BiasGyr() + ns.Get_dBias_Gyr());
+	imuState.Set_BiasAcc(ns.Get_BiasAcc() + ns.Get_dBias_Acc());
+	imuState.Set_DeltaBiasGyr(Eigen::Vector3d::Zero());
+	imuState.Set_DeltaBiasAcc(Eigen::Vector3d::Zero());
+}
+
+void Frame::UpdateNavState(const Preintegration& imupreint, const Eigen::Vector3d& gw)
+{
+	Eigen::Matrix3d dR = imupreint._delta_R;
+	Eigen::Vector3d dP = imupreint._delta_P;
+	Eigen::Vector3d dV = imupreint._delta_V;
+	double dt = imupreint._delta_time;
+
+	Eigen::Vector3d Pwbpre = imuState.Get_P();
+	Eigen::Matrix3d Rwbpre = imuState.Get_RotMatrix();
+	Eigen::Vector3d Vwbpre = imuState.Get_V();
+
+	Eigen::Matrix3d Rwb = Rwbpre * dR;
+	Eigen::Vector3d Pwb = Pwbpre + Vwbpre*dt + 0.5*gw*dt*dt + Rwbpre*dP;
+	Eigen::Vector3d Vwb = Vwbpre + gw*dt + Rwbpre*dV;
+
+	// Here assume that the pre-integration is re-computed after bias updated, so the bias term is ignored
+	imuState.Set_Pos(Pwb);
+	imuState.Set_Vel(Vwb);
+	imuState.Set_Rot(Rwb);
+
+	// Test log
+	if (imuState.Get_dBias_Gyr().norm()>1e-6 || imuState.Get_dBias_Acc().norm()>1e-6) 
+		std::cerr << "delta bias in updateNS is not zero" << imuState.Get_dBias_Gyr().transpose() 
+				  << ", " << imuState.Get_dBias_Acc().transpose() << std::endl;
+}
+
 void Frame::setKeyframe()
 {
   is_keyframe_ = true;

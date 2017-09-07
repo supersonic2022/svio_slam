@@ -59,6 +59,10 @@ void Viewer::drawKFs()
 
 	//std::cout << "kf size = " << kfs.size() << std::endl;
 
+	bool fisrt_kf = true;
+	GLfloat cur_mat[16];
+	GLfloat ow1[3] = {0 ,0 ,0}, ow2[3];
+
 	for (auto kf_it : kfs)
 	{
 		svo::FramePtr kf = kf_it;
@@ -67,11 +71,15 @@ void Viewer::drawKFs()
 		glPushMatrix();
 
 		//dummy way to convert
-		float mat[16];
 		for (int i = 0; i < 4; i++)
 			for (int j = 0; j < 4; j++)
-				mat[i * 4 + j] = Twc.matrix().transpose()(i,j);
-		glMultMatrixf(mat);
+				cur_mat[i * 4 + j] = Twc.matrix().transpose()(i, j);
+		ow2[0] = cur_mat[12];
+		ow2[1] = cur_mat[13];
+		ow2[2] = cur_mat[14];
+
+
+		glMultMatrixf(cur_mat);
 
 		glLineWidth(1.0f);
 		glColor3f(0.0f, 0.0f, 1.0f);
@@ -96,9 +104,23 @@ void Viewer::drawKFs()
 
 		glVertex3f(-w, -h, z);
 		glVertex3f(w, -h, z);
-		glEnd();
-
+		glEnd();	
 		glPopMatrix();
-	}
 
+		if (fisrt_kf) 
+			fisrt_kf = false;
+		else
+		{		
+			glLineWidth(1.0f);
+			glColor3f(0.0f, 1.0f, 0.0f);
+			glBegin(GL_LINES);
+			glVertex3f(ow1[0], ow1[1], ow1[2]);
+			glVertex3f(ow2[0], ow2[1], ow2[2]);
+			glEnd();
+		}
+
+		ow1[0] = ow2[0];
+		ow1[1] = ow2[1];
+		ow1[2] = ow2[2];
+	}
 }

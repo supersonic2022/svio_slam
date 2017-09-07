@@ -77,11 +77,12 @@ void BenchmarkNode::runFromFolder()
 		//cv::imshow("img", img);
 		// process frame
 		vo_->addImage(img, stod(dataset->img_timestamps[0][img_id]));
+		std::cout << "image : " << dataset->img_timestamps[0][img_id] << std::endl;
 
 		while (1)
 		{
 			static int cur_imu_id = 1;
-			if (img_id == 0) break;
+			//if (img_id == 0) break;
 			static double last_img_timestampe = stod(dataset->img_timestamps[0][img_id]);
 			if (img_id == (dataset->img_timestamps[0].size() - 1))
 			{
@@ -105,7 +106,7 @@ void BenchmarkNode::runFromFolder()
 				continue;
 			}
 
-			if (last_imu_timestamp <= last_img_timestampe && cur_imu_timestamp >= last_img_timestampe)
+			if (last_imu_timestamp < last_img_timestampe && cur_imu_timestamp >= last_img_timestampe)
 			{
 				IMUData imudata(dataset->imu_timestamps[0][cur_imu_id-1].second, cur_imu_timestamp - last_img_timestampe);
 				vo_->addImu(imudata);
@@ -116,16 +117,20 @@ void BenchmarkNode::runFromFolder()
 			{
 				IMUData imudata(dataset->imu_timestamps[0][cur_imu_id].second, next_img_timestamp - cur_imu_timestamp);
 				vo_->addImu(imudata);
+				std::cout << "imu : " << dataset->imu_timestamps[0][cur_imu_id].first << std::endl;
 				last_img_timestampe = cur_imu_timestamp;
 				cur_imu_timestamp = next_imu_timestamp;
-				last_img_timestampe = next_img_timestamp;
+				last_img_timestampe = next_img_timestamp; 
+				cur_imu_id++;
 				break;
 			}
 
 			IMUData imudata(dataset->imu_timestamps[0][cur_imu_id].second, next_imu_timestamp - cur_imu_timestamp);
 			vo_->addImu(imudata);
+			std::cout << "imu : " << dataset->imu_timestamps[0][cur_imu_id].first << std::endl;
 			last_img_timestampe = cur_imu_timestamp;
-			cur_imu_timestamp = next_imu_timestamp;		
+			cur_imu_timestamp = next_imu_timestamp;	
+			cur_imu_id++;
 		}
 
 		// display tracking quality

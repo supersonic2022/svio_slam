@@ -225,7 +225,7 @@ double SparseImgAlign::computeResiduals(
         if(linearize_system)
         {
           // compute Jacobian, weighted Hessian and weighted "steepest descend images" (times error)
-          const Vector6d J(jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter));
+          const svo::Vector6d J(jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter));
           H_.noalias() += J*J.transpose()*weight;
           Jres_.noalias() -= J*res*weight;
           if(display_)

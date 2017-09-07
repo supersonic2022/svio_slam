@@ -19,6 +19,7 @@ public:
 	Eigen::Matrix3d Get_RotMatrix() const { return _R.matrix(); } //rotation
 	Eigen::Vector3d Get_P() const { return _P; }         // position
 	Eigen::Vector3d Get_V() const { return _V; }         // velocity
+	
 	void Set_Pos(const Eigen::Vector3d &pos) { _P = pos; }
 	void Set_Vel(const Eigen::Vector3d &vel) { _V = vel; }
 	void Set_Rot(const Eigen::Matrix3d &rot) { _R = Sophus::SO3d(rot); }

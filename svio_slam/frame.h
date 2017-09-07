@@ -22,6 +22,9 @@
 #include "vikit/abstract_camera.h"
 #include "noncopyable.h"
 #include "global.h"
+#include "preintegration.h"
+
+#include "navstate.h"
 
 namespace g2o {
 class VertexSE3Expmap;
@@ -45,7 +48,7 @@ public:
   int                           id_;                    //!< Unique id of the frame.
   double                        timestamp_;             //!< Timestamp of when the image was recorded.
   vk::AbstractCamera*           cam_;                   //!< Camera model.
-  Sophus::SE3d                   T_f_w_;                 //!< Transform (f)rame from (w)orld.
+  Sophus::SE3d                  T_f_w_;                 //!< Transform (f)rame from (w)orld.
   Eigen::Matrix<double, 6, 6>   Cov_;                   //!< Covariance.
   ImgPyr                        img_pyr_;               //!< Image Pyramid.
   Features                      fts_;                   //!< List of features in the image.
@@ -53,6 +56,12 @@ public:
   bool                          is_keyframe_;           //!< Was this frames selected as keyframe?
   g2oFrameSE3*                  v_kf_;                  //!< Temporary pointer to the g2o node object of the keyframe.
   int                           last_published_ts_;     //!< Timestamp of last publishing.
+
+  NavState						imuState;
+  
+  void Frame::SetInitialNavStateAndBias(const NavState& ns);
+
+  void Frame::UpdateNavState(const Preintegration& imupreint, const Eigen::Vector3d& gw);
 
   Frame(vk::AbstractCamera* cam, const cv::Mat& img, double timestamp);
   ~Frame();

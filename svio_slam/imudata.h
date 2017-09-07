@@ -40,5 +40,5 @@ public:
 	// Raw data of imu's
 	Eigen::Vector3d _g;    //gyr data
 	Eigen::Vector3d _a;    //acc data
-	double _t;      //timestamp
+	double _t;      //time duration
 };

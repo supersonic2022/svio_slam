@@ -36,7 +36,8 @@ FrameHandlerMono::FrameHandlerMono(vk::AbstractCamera* cam) :
   FrameHandlerBase(),
   cam_(cam),
   reprojector_(cam_, map_),
-  depth_filter_(NULL)
+  depth_filter_(NULL),
+  imu_state_(NO_FRAME)
 {
   initialize();
 }
@@ -71,6 +72,8 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
   new_frame_.reset(new Frame(cam_, img.clone(), timestamp));
   SVO_STOP_TIMER("pyramid_creation");
 
+  imu_state_ = NEW_FRAME;
+
   // process frame
   UpdateResult res = RESULT_FAILURE;
   if(stage_ == STAGE_DEFAULT_FRAME)
@@ -83,6 +86,16 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
     res = relocalizeFrame(SE3d(Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero()),
                           map_.getClosestKeyframe(last_frame_));
 
+  if (stage_ != STAGE_FIRST_FRAME && stage_ != STAGE_RELOCALIZING)
+  {
+	  new_frame_->SetInitialNavStateAndBias(new_frame_->imuState);
+	  Eigen::Vector3d gravity;
+	  gravity << 0.0, 0.0, 9.81007;
+	  new_frame_->UpdateNavState(imuPreint, gravity);
+	  if (new_frame_->imuState.Get_dBias_Acc().norm() > 1e-6) cerr << "PredictNavStateByIMU1 current Frame dBias acc not zero" << endl;
+	  if (new_frame_->imuState.Get_dBias_Gyr().norm() > 1e-6) cerr << "PredictNavStateByIMU1 current Frame dBias gyr not zero" << endl;
+  }
+	
   // set last frame
   last_frame_ = new_frame_;
   new_frame_.reset();
@@ -90,7 +103,34 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
   finishFrameProcessingCommon(last_frame_->id_, res, last_frame_->nObs());
 }
 
-void FrameHandlerMono::addImu(const IMUData& imu) {}
+void FrameHandlerMono::addImu(const IMUData& imu) 
+{
+	if (imu_state_ == NO_FRAME)
+		return;
+	if (imu_state_ == NEW_FRAME)
+	{
+		imuPreint.reset();
+		imu_state_ = LAST_FRAME;
+	}
+	
+	Eigen::Vector3d bg;
+	Eigen::Vector3d ba;
+	if (!last_frame_)
+	{
+		//prior bias form okvis(maybe should add this prior in first frame? yes)
+		bg.setConstant(0.03);
+		ba.setConstant(0.1);
+		last_frame_->imuState.Set_BiasGyr(bg);
+		last_frame_->imuState.Set_BiasAcc(ba);
+	}
+	else
+	{
+		bg = last_frame_->imuState.Get_BiasGyr();
+		ba = last_frame_->imuState.Get_BiasAcc();
+	}
+
+	imuPreint.update(imu._g - bg, imu._a - ba, imu._t);
+}
 
 FrameHandlerMono::UpdateResult FrameHandlerMono::processFirstFrame()
 {
