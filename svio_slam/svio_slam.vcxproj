@@ -32,6 +32,7 @@
     <ClCompile Include="frame.cpp" />
     <ClCompile Include="frame_handler_base.cpp" />
     <ClCompile Include="frame_handler_mono.cpp" />
+    <ClCompile Include="g2otypes.cpp" />
     <ClCompile Include="imudata.cpp" />
     <ClCompile Include="initialization.cpp" />
     <ClCompile Include="main.cpp" />
@@ -71,6 +72,7 @@
     <ClInclude Include="frame.h" />
     <ClInclude Include="frame_handler_base.h" />
     <ClInclude Include="frame_handler_mono.h" />
+    <ClInclude Include="g2otypes.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="imudata.h" />
     <ClInclude Include="initialization.h" />

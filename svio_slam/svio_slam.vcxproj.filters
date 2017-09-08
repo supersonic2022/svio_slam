@@ -141,6 +141,9 @@
     <ClCompile Include="EuRoCReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="g2otypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bundle_adjustment.h">
@@ -291,6 +294,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EuRoCReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="g2otypes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
