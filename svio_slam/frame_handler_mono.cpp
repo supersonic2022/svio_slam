@@ -32,30 +32,35 @@
 
 namespace svo {
 
-FrameHandlerMono::FrameHandlerMono(vk::AbstractCamera* cam) :
-  FrameHandlerBase(),
-  cam_(cam),
-  reprojector_(cam_, map_),
-  depth_filter_(NULL),
-  imu_state_(NO_FRAME)
+FrameHandlerMono::FrameHandlerMono(vk::AbstractCamera* cam, EuRoCData* param) :
+	FrameHandlerBase(),
+	cam_(cam),
+	param_(param),
+	reprojector_(cam_, map_),
+	depth_filter_(NULL),
+	global(NULL),
+	imu_state_(NO_FRAME)
 {
   initialize();
 }
 
 void FrameHandlerMono::initialize()
 {
-  feature_detection::DetectorPtr feature_detector(
-      new feature_detection::FastDetector(
-          cam_->width(), cam_->height(), Config::gridSize(), Config::nPyrLevels()));
-  DepthFilter::callback_t depth_filter_cb = std::bind(
-      &MapPointCandidates::newCandidatePoint, &map_.point_candidates_, std::placeholders::_1, std::placeholders::_2);
-  depth_filter_ = new DepthFilter(feature_detector, depth_filter_cb);
-  depth_filter_->startThread();
+	feature_detection::DetectorPtr feature_detector(
+		  new feature_detection::FastDetector(
+			  cam_->width(), cam_->height(), Config::gridSize(), Config::nPyrLevels()));
+	DepthFilter::callback_t depth_filter_cb = std::bind(
+		  &MapPointCandidates::newCandidatePoint, &map_.point_candidates_, std::placeholders::_1, std::placeholders::_2);
+	depth_filter_ = new DepthFilter(feature_detector, depth_filter_cb);
+	depth_filter_->startThread();
+  
+	global = new GlobalOptimize(&map_, param_);
+	globalopt = new std::thread(&GlobalOptimize::run, global);
 }
 
 FrameHandlerMono::~FrameHandlerMono()
 {
-  delete depth_filter_;
+	delete depth_filter_;
 }
 
 void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
@@ -86,12 +91,11 @@ void FrameHandlerMono::addImage(const cv::Mat& img, const double timestamp)
     res = relocalizeFrame(SE3d(Eigen::Matrix3d::Identity(), Eigen::Vector3d::Zero()),
                           map_.getClosestKeyframe(last_frame_));
 
-  if (stage_ != STAGE_FIRST_FRAME && stage_ != STAGE_RELOCALIZING)
+  if (stage_ != STAGE_FIRST_FRAME)
   {
 	  new_frame_->SetInitialNavStateAndBias(new_frame_->imuState);
-	  Eigen::Vector3d gravity;
-	  gravity << 0.0, 0.0, 9.81007;
-	  new_frame_->UpdateNavState(imuPreint, gravity);
+	  new_frame_->imuPreint = imuPreint;
+	  new_frame_->UpdateNavState(imuPreint, param_->gravity);
 	  if (new_frame_->imuState.Get_dBias_Acc().norm() > 1e-6) cerr << "PredictNavStateByIMU1 current Frame dBias acc not zero" << endl;
 	  if (new_frame_->imuState.Get_dBias_Gyr().norm() > 1e-6) cerr << "PredictNavStateByIMU1 current Frame dBias gyr not zero" << endl;
   }

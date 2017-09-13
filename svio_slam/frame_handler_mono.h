@@ -24,6 +24,8 @@
 #include "initialization.h"
 #include "imudata.h"
 #include "preintegration.h"
+#include "globaloptimize.h"
+#include "EuRoCReader.h"
 
 namespace svo {
 
@@ -33,7 +35,7 @@ class FrameHandlerMono : public FrameHandlerBase
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   
-  FrameHandlerMono(vk::AbstractCamera* cam);
+  FrameHandlerMono(vk::AbstractCamera* cam, EuRoCData* param);
   virtual ~FrameHandlerMono();
 
   /// Provide an image.
@@ -74,8 +76,11 @@ protected:
 		NEW_FRAME,
 		LAST_FRAME
 	};
+	EuRoCData* param_;
 	IMU_STATE imu_state_;
 	Preintegration imuPreint;
+	GlobalOptimize* global;
+	std::thread* globalopt;
 
 	vk::AbstractCamera* cam_;                     //!< Camera model, can be ATAN, Pinhole or Ocam (see vikit).
 	Reprojector reprojector_;                     //!< Projects points from other keyframes into the current frame

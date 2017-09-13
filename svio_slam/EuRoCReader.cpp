@@ -5,6 +5,7 @@
 EuRoCData::EuRoCData(string dir, int cams, int imus):
 	mav_filedir(dir), cam_num(cams), imu_num(imus)
 {
+	gravity << 0.0, 0.0, 9.81007;
 	readImgsAndParams();
 	readImusAndParams();
 }

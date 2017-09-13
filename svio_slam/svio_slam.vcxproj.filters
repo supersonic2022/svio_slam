@@ -144,6 +144,9 @@
     <ClCompile Include="g2otypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="globaloptimize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bundle_adjustment.h">
@@ -297,6 +300,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="g2otypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="globaloptimize.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

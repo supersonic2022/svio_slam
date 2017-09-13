@@ -51,7 +51,7 @@ namespace g2o
 		virtual void oplusImpl(const double* update_)
 		{
 			Eigen::Map<const Vector6d> update(update_);
-			_estimate.IncSmall(update);
+			_estimate.IncSmallBias(update);
 		}
 	};
 
@@ -65,7 +65,7 @@ namespace g2o
 		bool read(std::istream& is) { return true; }
 		bool write(std::ostream& os) const { return true; }
 
-		void computeEror();
+		void computeError();
 
 		virtual void linearizeOplus();
 

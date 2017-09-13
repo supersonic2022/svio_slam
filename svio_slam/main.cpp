@@ -46,7 +46,7 @@ BenchmarkNode::BenchmarkNode()
 		dataset->cam_params[0].distortion_coefficients[1], 
 		dataset->cam_params[0].distortion_coefficients[2], 
 		dataset->cam_params[0].distortion_coefficients[3]);
-	vo_ = new svo::FrameHandlerMono(cam_);
+	vo_ = new svo::FrameHandlerMono(cam_, dataset);
 	viewer = new Viewer(cam_, vo_);
 	vo_->start();
 	view = std::thread(&Viewer::run, viewer);

@@ -3,6 +3,7 @@
 #include "frame.h"
 #include "point.h"
 #include <pangolin/pangolin.h>
+#include "EuRoCReader.h"
 
 Viewer::Viewer(vk::AbstractCamera* cam_, svo::FrameHandlerMono* vo_):
 	cam(cam_), vo(vo_)
@@ -67,6 +68,8 @@ void Viewer::drawKFs()
 	{
 		svo::FramePtr kf = kf_it;
 		Sophus::SE3d Twc = kf_it->T_f_w_;
+
+		std::cout << "visual : " << Twc.matrix() << std::endl << "imu : " << Sophus::SE3d(kf_it->imuState.Get_R(), kf_it->imuState.Get_P()).matrix() << std::endl;
 
 		glPushMatrix();
 

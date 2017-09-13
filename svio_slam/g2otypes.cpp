@@ -4,7 +4,7 @@ namespace g2o
 {
 	//this error this between navstate and preintegration which in my implementation is the same
 	//so the error should be modified ***
-	void EdgeNavStatePVR::computeEror()
+	void EdgeNavStatePVR::computeError()
 	{
 		const VertexNavStatePVR* vPVRi = static_cast<const VertexNavStatePVR*>(_vertices[0]);
 		const VertexNavStatePVR* vPVRj = static_cast<const VertexNavStatePVR*>(_vertices[1]);

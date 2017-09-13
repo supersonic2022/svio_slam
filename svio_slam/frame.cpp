@@ -30,9 +30,11 @@
 namespace svo {
 
 int Frame::frame_counter_ = 0;
+int Frame::kf_counter_ = 0;
 
 Frame::Frame(vk::AbstractCamera* cam, const cv::Mat& img, double timestamp) :
-    id_(frame_counter_++),
+	id_(frame_counter_++),
+	kf_id_(-1),
     timestamp_(timestamp),
     cam_(cam),
     key_pts_(5),
@@ -82,8 +84,8 @@ void Frame::UpdateNavState(const Preintegration& imupreint, const Eigen::Vector3
 	Eigen::Vector3d Vwbpre = imuState.Get_V();
 
 	Eigen::Matrix3d Rwb = Rwbpre * dR;
-	Eigen::Vector3d Pwb = Pwbpre + Vwbpre*dt + 0.5*gw*dt*dt + Rwbpre*dP;
-	Eigen::Vector3d Vwb = Vwbpre + gw*dt + Rwbpre*dV;
+	Eigen::Vector3d Pwb = Pwbpre + Vwbpre*dt + 0.5 * gw * dt * dt + Rwbpre*dP;
+	Eigen::Vector3d Vwb = Vwbpre + gw * dt + Rwbpre * dV;
 
 	// Here assume that the pre-integration is re-computed after bias updated, so the bias term is ignored
 	imuState.Set_Pos(Pwb);
@@ -96,9 +98,29 @@ void Frame::UpdateNavState(const Preintegration& imupreint, const Eigen::Vector3
 				  << ", " << imuState.Get_dBias_Acc().transpose() << std::endl;
 }
 
+void Frame::UpdatePoseFromNS(const Eigen::Matrix4d &Tbc)
+{
+	Eigen::Matrix3d Rbc_ = Tbc.block<3, 3>(0, 0);
+	Eigen::Vector3d Pbc_ = Tbc.block<3, 1>(0, 3); 
+	Eigen::Matrix3d Rwb_ = imuState.Get_RotMatrix();
+	Eigen::Vector3d Pwb_ = imuState.Get_P();
+
+	Eigen::Matrix3d Rcw_ = (Rwb_ * Rbc_).transpose();
+	Eigen::Vector3d Pwc_ = Rwb_*Pbc_ + Pwb_;
+	Eigen::Vector3d Pcw_ = -Rcw_*Pwc_;
+
+	Eigen::Matrix4d Tcw_ = Eigen::Matrix4d::Identity();
+	Tcw_.block<3, 3>(0, 0) = Rcw_;
+	Tcw_.block<3, 1>(0, 3) = Pcw_;
+
+	T_f_w_ = Sophus::SE3d(Tcw_);
+}
+
 void Frame::setKeyframe()
 {
   is_keyframe_ = true;
+  kf_counter_++;
+  kf_id_ = kf_counter_;
   setKeyPoints();
 }
 

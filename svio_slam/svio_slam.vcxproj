@@ -33,6 +33,7 @@
     <ClCompile Include="frame_handler_base.cpp" />
     <ClCompile Include="frame_handler_mono.cpp" />
     <ClCompile Include="g2otypes.cpp" />
+    <ClCompile Include="globaloptimize.cpp" />
     <ClCompile Include="imudata.cpp" />
     <ClCompile Include="initialization.cpp" />
     <ClCompile Include="main.cpp" />
@@ -74,6 +75,7 @@
     <ClInclude Include="frame_handler_mono.h" />
     <ClInclude Include="g2otypes.h" />
     <ClInclude Include="global.h" />
+    <ClInclude Include="globaloptimize.h" />
     <ClInclude Include="imudata.h" />
     <ClInclude Include="initialization.h" />
     <ClInclude Include="map.h" />
@@ -197,7 +199,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\GaryL\Desktop\svo\Pangolin-master\build\external\glew\include;C:\Program Files\Pangolin\include;C:\Users\GaryL\Desktop\svo\suitesparse-metis-for-windows-1.3.1\build\install\include\suitesparse;C:\Program Files\g2o\include;C:\Program Files\Sophus\include;D:\Software\Opencv2413\opencv\build\include;D:\eigen3.3.4\eigen-eigen-5a0156e40feb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalOptions>/D _CRT_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/D _CRT_SECURE_NO_WARNINGS  /bigobj %(AdditionalOptions)</AdditionalOptions>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>

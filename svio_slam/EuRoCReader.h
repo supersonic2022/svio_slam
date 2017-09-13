@@ -62,4 +62,6 @@ public:
 
 	vector<CameraParam> cam_params;
 	vector<IMUParam> imu_params;
+
+	Eigen::Vector3d gravity;
 };
