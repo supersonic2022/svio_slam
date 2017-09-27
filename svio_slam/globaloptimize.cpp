@@ -20,7 +20,10 @@ void GlobalOptimize::run()
 {
 	while (1)
 	{
-		get_kfs();
+		std::this_thread::sleep_for(2s);
+		get_kfs();		
+		if (tmp_kfs.size() < 5)
+			continue;
 		GlobalBundleAdjustmentNavState();
 	}
 }
@@ -88,12 +91,14 @@ void GlobalOptimize::GlobalBundleAdjustmentNavState()
 	svo::FramePtr pKF0 = NULL;
 	for (auto kf_it : tmp_kfs)
 	{
-		svo::FramePtr pKF1 = kf_it;
+
 		if (firstKF)
 		{
+			pKF0 = kf_it;
 			firstKF = false;
 			continue;
 		}
+		svo::FramePtr pKF1 = kf_it;
 
 		//if (!pKF0)
 		//{

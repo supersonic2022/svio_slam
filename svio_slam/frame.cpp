@@ -51,15 +51,15 @@ Frame::~Frame()
 
 void Frame::initFrame(const cv::Mat& img)
 {
-  // check image
-  if(img.empty() || img.type() != CV_8UC1 || img.cols != cam_->width() || img.rows != cam_->height())
-    throw std::runtime_error("Frame: provided image has not the same size as the camera model or image is not grayscale");
+	// check image
+	if(img.empty() || img.type() != CV_8UC1 || img.cols != cam_->width() || img.rows != cam_->height())
+	throw std::runtime_error("Frame: provided image has not the same size as the camera model or image is not grayscale");
 
-  // Set keypoints to NULL
-  std::for_each(key_pts_.begin(), key_pts_.end(), [&](Feature* ftr){ ftr=NULL; });
+	// Set keypoints to NULL
+	std::for_each(key_pts_.begin(), key_pts_.end(), [&](Feature* ftr){ ftr=NULL; });
 
-  // Build Image Pyramid
-  frame_utils::createImgPyramid(img, std::max(Config::nPyrLevels(), Config::kltMaxLevel()+1), img_pyr_);
+	// Build Image Pyramid
+	frame_utils::createImgPyramid(img, std::max(Config::nPyrLevels(), Config::kltMaxLevel()+1), img_pyr_);
 }
 
 void Frame::SetInitialNavStateAndBias(const NavState& ns)

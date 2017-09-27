@@ -14,7 +14,7 @@ public:
 	void run();
 
 private:
-	float width;
+	float width; 
 	float height;
 
 	vk::AbstractCamera* cam;
@@ -25,7 +25,7 @@ private:
 	//not thread safe yet
 	void drawKFs();
 
-	void drawPoints();
+	//void drawPoints();
 
 };
 

@@ -33,115 +33,113 @@ SparseImgAlign::SparseImgAlign(
         max_level_(max_level),
         min_level_(min_level)
 {
-  n_iter_ = n_iter;
-  n_iter_init_ = n_iter_;
-  method_ = method;
-  verbose_ = verbose;
-  eps_ = 0.000001;
+	n_iter_ = n_iter;
+	n_iter_init_ = n_iter_;
+	method_ = method;
+	verbose_ = verbose;
+	eps_ = 0.000001;
 }
 
 size_t SparseImgAlign::run(FramePtr ref_frame, FramePtr cur_frame)
 {
-  reset();
+	reset();
 
-  if(ref_frame->fts_.empty())
-  {
-    SVO_WARN_STREAM("SparseImgAlign: no features to track!");
-    return 0;
-  }
+	if(ref_frame->fts_.empty())
+	{
+		SVO_WARN_STREAM("SparseImgAlign: no features to track!");
+		return 0;
+	}
 
-  ref_frame_ = ref_frame;
-  cur_frame_ = cur_frame;
-  ref_patch_cache_ = cv::Mat(ref_frame_->fts_.size(), patch_area_, CV_32F);
-  jacobian_cache_.resize(Eigen::NoChange, ref_patch_cache_.rows*patch_area_);
-  visible_fts_.resize(ref_patch_cache_.rows, false); // TODO: should it be reset at each level?
+	ref_frame_ = ref_frame;
+	cur_frame_ = cur_frame;
+	ref_patch_cache_ = cv::Mat(ref_frame_->fts_.size(), patch_area_, CV_32F);
+	jacobian_cache_.resize(Eigen::NoChange, ref_patch_cache_.rows*patch_area_);
+	visible_fts_.resize(ref_patch_cache_.rows, false); // TODO: should it be reset at each level?
 
-  SE3d T_cur_from_ref(cur_frame_->T_f_w_ * ref_frame_->T_f_w_.inverse());
+	SE3d T_cur_from_ref(cur_frame_->T_f_w_ * ref_frame_->T_f_w_.inverse());
 
-  for(level_=max_level_; level_>=min_level_; --level_)
-  {
-    mu_ = 0.1;
-    jacobian_cache_.setZero();
-    have_ref_patch_cache_ = false;
-    if(verbose_)
-      printf("\nPYRAMID LEVEL %i\n---------------\n", level_);
-    optimize(T_cur_from_ref);
-  }
-  cur_frame_->T_f_w_ = T_cur_from_ref * ref_frame_->T_f_w_;
+	for(level_ = max_level_; level_ >=min_level_; --level_)
+	{
+		mu_ = 0.1;
+		jacobian_cache_.setZero();
+		have_ref_patch_cache_ = false;
+		if(verbose_)
+			printf("\nPYRAMID LEVEL %i\n---------------\n", level_);
+		optimize(T_cur_from_ref);
+	}
+	cur_frame_->T_f_w_ = T_cur_from_ref * ref_frame_->T_f_w_;
 
-
-
-  return n_meas_/patch_area_;
+	return n_meas_/patch_area_;
 }
 
 Eigen::Matrix<double, 6, 6> SparseImgAlign::getFisherInformation()
 {
-  double sigma_i_sq = 5e-4*255*255; // image noise
-  Eigen::Matrix<double,6,6> I = H_/sigma_i_sq;
-  return I;
+	double sigma_i_sq = 5e-4*255*255; // image noise
+	Eigen::Matrix<double,6,6> I = H_/sigma_i_sq;
+	return I;
 }
 
 void SparseImgAlign::precomputeReferencePatches()
 {
-  const int border = patch_halfsize_+1;
-  const cv::Mat& ref_img = ref_frame_->img_pyr_.at(level_);
-  const int stride = ref_img.cols;
-  const float scale = 1.0f/(1<<level_);
-  const Eigen::Vector3d ref_pos = ref_frame_->pos();
-  const double focal_length = ref_frame_->cam_->errorMultiplier2();
-  size_t feature_counter = 0;
-  std::vector<bool>::iterator visiblity_it = visible_fts_.begin();
-  for(auto it=ref_frame_->fts_.begin(), ite=ref_frame_->fts_.end();
-      it!=ite; ++it, ++feature_counter, ++visiblity_it)
-  {
+	const int border = patch_halfsize_+1;
+	const cv::Mat& ref_img = ref_frame_->img_pyr_.at(level_);
+	const int stride = ref_img.cols;
+	const float scale = 1.0f/(1 << level_);
+	const Eigen::Vector3d ref_pos = ref_frame_->pos();
+	const double focal_length = ref_frame_->cam_->errorMultiplier2();
+	size_t feature_counter = 0;
+	std::vector<bool>::iterator visiblity_it = visible_fts_.begin();
+	for(auto it=ref_frame_->fts_.begin(), ite=ref_frame_->fts_.end();
+		it!=ite; ++it, ++feature_counter, ++visiblity_it)
+	{
     // check if reference with patch size is within image
-    const float u_ref = (*it)->px[0]*scale;
-    const float v_ref = (*it)->px[1]*scale;
-    const int u_ref_i = floorf(u_ref);
-    const int v_ref_i = floorf(v_ref);
-    if((*it)->point == NULL || u_ref_i-border < 0 || v_ref_i-border < 0 || u_ref_i+border >= ref_img.cols || v_ref_i+border >= ref_img.rows)
-      continue;
-    *visiblity_it = true;
+		const float u_ref = (*it)->px[0]*scale;
+		const float v_ref = (*it)->px[1]*scale;
+		const int u_ref_i = floorf(u_ref);
+		const int v_ref_i = floorf(v_ref);
+		if((*it)->point == NULL || u_ref_i-border < 0 || v_ref_i-border < 0 || u_ref_i+border >= ref_img.cols || v_ref_i+border >= ref_img.rows)
+			continue;
+		*visiblity_it = true;
 
-    // cannot just take the 3d points coordinate because of the reprojection errors in the reference image!!!
-    const double depth(((*it)->point->pos_ - ref_pos).norm());
-    const Eigen::Vector3d xyz_ref((*it)->f*depth);
+		// cannot just take the 3d points coordinate because of the reprojection errors in the reference image!!!
+		const double depth(((*it)->point->pos_ - ref_pos).norm());
+		const Eigen::Vector3d xyz_ref((*it)->f*depth);
 
-    // evaluate projection jacobian
-	Eigen::Matrix<double,2,6> frame_jac;
-    Frame::jacobian_xyz2uv(xyz_ref, frame_jac);
+		// evaluate projection jacobian
+		Eigen::Matrix<double,2,6> frame_jac;
+		Frame::jacobian_xyz2uv(xyz_ref, frame_jac);
 
-    // compute bilateral interpolation weights for reference image
-    const float subpix_u_ref = u_ref-u_ref_i;
-    const float subpix_v_ref = v_ref-v_ref_i;
-    const float w_ref_tl = (1.0-subpix_u_ref) * (1.0-subpix_v_ref);
-    const float w_ref_tr = subpix_u_ref * (1.0-subpix_v_ref);
-    const float w_ref_bl = (1.0-subpix_u_ref) * subpix_v_ref;
-    const float w_ref_br = subpix_u_ref * subpix_v_ref;
-    size_t pixel_counter = 0;
-    float* cache_ptr = reinterpret_cast<float*>(ref_patch_cache_.data) + patch_area_*feature_counter;
-    for(int y=0; y<patch_size_; ++y)
-    {
-      uint8_t* ref_img_ptr = (uint8_t*) ref_img.data + (v_ref_i+y-patch_halfsize_)*stride + (u_ref_i-patch_halfsize_);
-      for(int x=0; x<patch_size_; ++x, ++ref_img_ptr, ++cache_ptr, ++pixel_counter)
-      {
-        // precompute interpolated reference patch color
-        *cache_ptr = w_ref_tl*ref_img_ptr[0] + w_ref_tr*ref_img_ptr[1] + w_ref_bl*ref_img_ptr[stride] + w_ref_br*ref_img_ptr[stride+1];
+		// compute bilateral interpolation weights for reference image
+		const float subpix_u_ref = u_ref-u_ref_i;
+		const float subpix_v_ref = v_ref-v_ref_i;
+		const float w_ref_tl = (1.0-subpix_u_ref) * (1.0-subpix_v_ref);
+		const float w_ref_tr = subpix_u_ref * (1.0-subpix_v_ref);
+		const float w_ref_bl = (1.0-subpix_u_ref) * subpix_v_ref;
+		const float w_ref_br = subpix_u_ref * subpix_v_ref;
+		size_t pixel_counter = 0;
+		float* cache_ptr = reinterpret_cast<float*>(ref_patch_cache_.data) + patch_area_*feature_counter;
+		for(int y=0; y<patch_size_; ++y)
+		{
+			uint8_t* ref_img_ptr = (uint8_t*) ref_img.data + (v_ref_i+y-patch_halfsize_)*stride + (u_ref_i-patch_halfsize_);
+			for(int x=0; x<patch_size_; ++x, ++ref_img_ptr, ++cache_ptr, ++pixel_counter)
+			{
+				// precompute interpolated reference patch color
+				*cache_ptr = w_ref_tl*ref_img_ptr[0] + w_ref_tr*ref_img_ptr[1] + w_ref_bl*ref_img_ptr[stride] + w_ref_br*ref_img_ptr[stride+1];
 
-        // we use the inverse compositional: thereby we can take the gradient always at the same position
-        // get gradient of warped image (~gradient at warped position)
-        float dx = 0.5f * ((w_ref_tl*ref_img_ptr[1] + w_ref_tr*ref_img_ptr[2] + w_ref_bl*ref_img_ptr[stride+1] + w_ref_br*ref_img_ptr[stride+2])
+				// we use the inverse compositional: thereby we can take the gradient always at the same position
+				// get gradient of warped image (~gradient at warped position)
+				float dx = 0.5f * ((w_ref_tl*ref_img_ptr[1] + w_ref_tr*ref_img_ptr[2] + w_ref_bl*ref_img_ptr[stride+1] + w_ref_br*ref_img_ptr[stride+2])
                           -(w_ref_tl*ref_img_ptr[-1] + w_ref_tr*ref_img_ptr[0] + w_ref_bl*ref_img_ptr[stride-1] + w_ref_br*ref_img_ptr[stride]));
-        float dy = 0.5f * ((w_ref_tl*ref_img_ptr[stride] + w_ref_tr*ref_img_ptr[1+stride] + w_ref_bl*ref_img_ptr[stride*2] + w_ref_br*ref_img_ptr[stride*2+1])
+				float dy = 0.5f * ((w_ref_tl*ref_img_ptr[stride] + w_ref_tr*ref_img_ptr[1+stride] + w_ref_bl*ref_img_ptr[stride*2] + w_ref_br*ref_img_ptr[stride*2+1])
                           -(w_ref_tl*ref_img_ptr[-stride] + w_ref_tr*ref_img_ptr[1-stride] + w_ref_bl*ref_img_ptr[0] + w_ref_br*ref_img_ptr[1]));
 
-        // cache the jacobian
-        jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter) =
-            (dx*frame_jac.row(0) + dy*frame_jac.row(1))*(focal_length / (1<<level_));
-      }
-    }
-  }
-  have_ref_patch_cache_ = true;
+				// cache the jacobian
+				jacobian_cache_.col(feature_counter*patch_area_ + pixel_counter) =
+					(dx*frame_jac.row(0) + dy*frame_jac.row(1))*(focal_length / (1<<level_));
+			}
+		}
+	}
+	have_ref_patch_cache_ = true;
 }
 
 double SparseImgAlign::computeResiduals(

@@ -12,7 +12,6 @@ Viewer::Viewer(vk::AbstractCamera* cam_, svo::FrameHandlerMono* vo_):
 	height = 768;
 	double fps = 30;
 	mT = 1e3 / fps;
-
 }
 
 void Viewer::run()
@@ -69,7 +68,7 @@ void Viewer::drawKFs()
 		svo::FramePtr kf = kf_it;
 		Sophus::SE3d Twc = kf_it->T_f_w_;
 
-		std::cout << "visual : " << Twc.matrix() << std::endl << "imu : " << Sophus::SE3d(kf_it->imuState.Get_R(), kf_it->imuState.Get_P()).matrix() << std::endl;
+		//std::cout << "visual : " << Twc.matrix() << std::endl << "imu : " << Sophus::SE3d(kf_it->imuState.Get_R(), kf_it->imuState.Get_P()).matrix() << std::endl;
 
 		glPushMatrix();
 
@@ -80,7 +79,6 @@ void Viewer::drawKFs()
 		ow2[0] = cur_mat[12];
 		ow2[1] = cur_mat[13];
 		ow2[2] = cur_mat[14];
-
 
 		glMultMatrixf(cur_mat);
 

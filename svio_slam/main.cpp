@@ -76,8 +76,11 @@ void BenchmarkNode::runFromFolder()
 		
 		//cv::imshow("img", img);
 		// process frame
-		vo_->addImage(img, stod(dataset->img_timestamps[0][img_id]));
 		std::cout << "image : " << dataset->img_timestamps[0][img_id] << std::endl;
+		//if (img_id == 22)
+		//	cout << endl;
+		vo_->addImage(img, stod(dataset->img_timestamps[0][img_id]));
+		
 
 		while (1)
 		{

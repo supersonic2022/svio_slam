@@ -75,7 +75,7 @@ computeMatchesInliers()
 }
 
 bool Homography::
-computeSE3dromMatches()
+computeSE3fromMatches()
 {
   calcFromMatches();
   bool res = decompose();

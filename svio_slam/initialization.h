@@ -44,8 +44,8 @@ public:
 protected:
   std::vector<cv::Point2f> px_ref_;      //!< keypoints to be tracked in reference frame.
   std::vector<cv::Point2f> px_cur_;      //!< tracked keypoints in current frame.
-  std::vector<Eigen::Vector3d> f_ref_;          //!< bearing vectors corresponding to the keypoints in the reference image.
-  std::vector<Eigen::Vector3d> f_cur_;          //!< bearing vectors corresponding to the keypoints in the current image.
+  std::vector<Eigen::Vector3d> f_ref_;   //!< bearing vectors corresponding to the keypoints in the reference image.
+  std::vector<Eigen::Vector3d> f_cur_;   //!< bearing vectors corresponding to the keypoints in the current image.
   std::vector<double> disparities_;      //!< disparity between first and second frame.
   std::vector<int> inliers_;             //!< inliers after the geometric check (e.g., Homography).
   std::vector<Eigen::Vector3d> xyz_in_cur_;     //!< 3D points computed during the geometric check.

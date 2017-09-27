@@ -59,7 +59,7 @@ public:
   computeMatchesInliers ();
 
   bool
-  computeSE3dromMatches ();
+  computeSE3fromMatches ();
 
   bool
   decompose             ();

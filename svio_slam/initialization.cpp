@@ -28,16 +28,16 @@ namespace initialization {
 
 InitResult KltHomographyInit::addFirstFrame(FramePtr frame_ref)
 {
-  reset();
-  detectFeatures(frame_ref, px_ref_, f_ref_);
-  if(px_ref_.size() < 100)
-  {
-    SVO_WARN_STREAM_THROTTLE(2.0, "First image has less than 100 features. Retry in more textured environment.");
-    return FAILURE;
-  }
-  frame_ref_ = frame_ref;
-  px_cur_.insert(px_cur_.begin(), px_ref_.begin(), px_ref_.end());
-  return SUCCESS;
+	reset();
+	detectFeatures(frame_ref, px_ref_, f_ref_);
+	if(px_ref_.size() < 100)
+	{
+		SVO_WARN_STREAM_THROTTLE(2.0, "First image has less than 100 features. Retry in more textured environment.");
+		return FAILURE;
+	}
+	frame_ref_ = frame_ref;
+	px_cur_.insert(px_cur_.begin(), px_ref_.begin(), px_ref_.end());
+	return SUCCESS;
 }
 
 InitResult KltHomographyInit::addSecondFrame(FramePtr frame_cur)
@@ -48,6 +48,7 @@ InitResult KltHomographyInit::addSecondFrame(FramePtr frame_cur)
   if(disparities_.size() < Config::initMinTracked())
     return FAILURE;
 
+  //get the median number of the disparities
   double disparity = vk::getMedian(disparities_);
   SVO_INFO_STREAM("Init: KLT "<<disparity<<"px average disparity.");
   if(disparity < Config::initMinDisparity())
@@ -66,6 +67,7 @@ InitResult KltHomographyInit::addSecondFrame(FramePtr frame_cur)
   }
 
   // Rescale the map such that the mean scene depth is equal to the specified scale
+  // (this place can be replaced by imu measurement)
   std::vector<double> depth_vec;
   for(size_t i=0; i<xyz_in_cur_.size(); ++i)
     depth_vec.push_back((xyz_in_cur_[i]).z());
@@ -109,19 +111,19 @@ void detectFeatures(
     std::vector<cv::Point2f>& px_vec,
     std::vector<Eigen::Vector3d>& f_vec)
 {
-  Features new_features;
-  feature_detection::FastDetector detector(
-      frame->img().cols, frame->img().rows, Config::gridSize(), Config::nPyrLevels());
-  detector.detect(frame.get(), frame->img_pyr_, Config::triangMinCornerScore(), new_features);
+	Features new_features;
+	feature_detection::FastDetector detector(
+		frame->img().cols, frame->img().rows, Config::gridSize(), Config::nPyrLevels());
+	detector.detect(frame.get(), frame->img_pyr_, Config::triangMinCornerScore(), new_features);
 
-  // now for all maximum corners, initialize a new seed
-  px_vec.clear(); px_vec.reserve(new_features.size());
-  f_vec.clear(); f_vec.reserve(new_features.size());
-  std::for_each(new_features.begin(), new_features.end(), [&](Feature* ftr){
-    px_vec.push_back(cv::Point2f(ftr->px[0], ftr->px[1]));
-    f_vec.push_back(ftr->f);
-    delete ftr;
-  });
+	// now for all maximum corners, initialize a new seed
+	px_vec.clear(); px_vec.reserve(new_features.size());
+	f_vec.clear(); f_vec.reserve(new_features.size());
+	std::for_each(new_features.begin(), new_features.end(), [&](Feature* ftr){
+		px_vec.push_back(cv::Point2f(ftr->px[0], ftr->px[1]));
+		f_vec.push_back(ftr->f);
+		delete ftr;
+	});
 }
 
 void trackKlt(
@@ -133,39 +135,50 @@ void trackKlt(
 	std::vector<Eigen::Vector3d>& f_cur,
 	std::vector<double>& disparities)
 {
-  const double klt_win_size = 30.0;
-  const int klt_max_iter = 30;
-  const double klt_eps = 0.001;
-  std::vector<uchar> status;
-  std::vector<float> error;
-  std::vector<float> min_eig_vec;
-  cv::TermCriteria termcrit(cv::TermCriteria::COUNT+cv::TermCriteria::EPS, klt_max_iter, klt_eps);
-  cv::calcOpticalFlowPyrLK(frame_ref->img_pyr_[0], frame_cur->img_pyr_[0],
+	const double klt_win_size = 30.0;
+	const int klt_max_iter = 30;
+	const double klt_eps = 0.001;
+	std::vector<uchar> status;
+	std::vector<float> error;
+	std::vector<float> min_eig_vec;
+	cv::TermCriteria termcrit(cv::TermCriteria::COUNT + cv::TermCriteria::EPS, klt_max_iter, klt_eps);
+	//Learning Opencv3 P498
+	cv::calcOpticalFlowPyrLK(frame_ref->img_pyr_[0], frame_cur->img_pyr_[0],
                            px_ref, px_cur,
                            status, error,
                            cv::Size2i(klt_win_size, klt_win_size),
                            4, termcrit, cv::OPTFLOW_USE_INITIAL_FLOW);
 
-  std::vector<cv::Point2f>::iterator px_ref_it = px_ref.begin();
-  std::vector<cv::Point2f>::iterator px_cur_it = px_cur.begin();
-  std::vector<Eigen::Vector3d>::iterator f_ref_it = f_ref.begin();
-  f_cur.clear(); f_cur.reserve(px_cur.size());
-  disparities.clear(); disparities.reserve(px_cur.size());
-  for(size_t i=0; px_ref_it != px_ref.end(); ++i)
-  {
-    if(!status[i])
-    {
-      px_ref_it = px_ref.erase(px_ref_it);
-      px_cur_it = px_cur.erase(px_cur_it);
-      f_ref_it = f_ref.erase(f_ref_it);
-      continue;
-    }
-    f_cur.push_back(frame_cur->c2f(px_cur_it->x, px_cur_it->y));
-    disparities.push_back(Eigen::Vector2d(px_ref_it->x - px_cur_it->x, px_ref_it->y - px_cur_it->y).norm());
-    ++px_ref_it;
-    ++px_cur_it;
-    ++f_ref_it;
-  }
+	std::vector<cv::Point2f>::iterator px_ref_it = px_ref.begin();
+	std::vector<cv::Point2f>::iterator px_cur_it = px_cur.begin();
+	std::vector<Eigen::Vector3d>::iterator f_ref_it = f_ref.begin();
+	f_cur.clear(); f_cur.reserve(px_cur.size());
+	disparities.clear(); disparities.reserve(px_cur.size());
+	
+	//cv::Mat color;
+	//cv::cvtColor(frame_cur->img_pyr_[0], color, cv::COLOR_GRAY2RGB);
+
+	for(size_t i=0; px_ref_it != px_ref.end(); ++i)
+	{
+		//cv::circle(color, px_ref[i], 1, cv::Scalar(0, 0, 255), 2);
+		//cv::line(color, px_ref[i], px_cur[i], cv::Scalar(0, 255, 0), 2);
+		if(!status[i])
+		{
+			//cv::line(color, px_ref[i], px_cur[i], cv::Scalar(255, 0, 0), 2);
+			px_ref_it = px_ref.erase(px_ref_it);
+			px_cur_it = px_cur.erase(px_cur_it);
+			f_ref_it = f_ref.erase(f_ref_it);
+			continue;
+		}
+		f_cur.push_back(frame_cur->c2f(px_cur_it->x, px_cur_it->y));
+		disparities.push_back(Eigen::Vector2d(px_ref_it->x - px_cur_it->x, px_ref_it->y - px_cur_it->y).norm());
+		++px_ref_it;
+		++px_cur_it;
+		++f_ref_it;
+	}
+
+	//cv::imshow("color", color);
+	//cv::waitKey(0);
 }
 
 void computeHomography(
@@ -185,7 +198,7 @@ void computeHomography(
     uv_cur[i] = vk::project2d(f_cur[i]);
   }
   vk::Homography Homography(uv_ref, uv_cur, focal_length, reprojection_threshold);
-  Homography.computeSE3dromMatches();
+  Homography.computeSE3fromMatches();
   std::vector<int> outliers;
   vk::computeInliers(f_cur, f_ref,
                      Homography.T_c2_from_c1.so3().matrix(), Homography.T_c2_from_c1.translation(),
